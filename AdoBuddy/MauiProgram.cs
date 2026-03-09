@@ -24,16 +24,29 @@ namespace AdoBuddy
 
             builder.Services.AddHttpClient();
 
+            // Services
+            builder.Services.AddSingleton<ICredentialStore, CredentialStore>();
             builder.Services.AddSingleton<IAzureDevOpsService, AzureDevOpsService>();
+            builder.Services.AddSingleton<ProjectContext>();
 
+            // Shell & App
+            builder.Services.AddSingleton<AppShell>();
+
+            // ViewModels
             builder.Services.AddTransient<MainViewModel>();
-            builder.Services.AddTransient<MainPage>();
-
+            builder.Services.AddTransient<LoginViewModel>();
+            builder.Services.AddTransient<ProjectsViewModel>();
             builder.Services.AddTransient<PipelinesViewModel>();
-            builder.Services.AddTransient<PipelinesPage>();
-
             builder.Services.AddTransient<PullRequestsViewModel>();
+            builder.Services.AddTransient<WorkItemsViewModel>();
+
+            // Pages
+            builder.Services.AddTransient<MainPage>();
+            builder.Services.AddTransient<LoginPage>();
+            builder.Services.AddTransient<ProjectsPage>();
+            builder.Services.AddTransient<PipelinesPage>();
             builder.Services.AddTransient<PullRequestsPage>();
+            builder.Services.AddTransient<WorkItemsPage>();
 
             return builder.Build();
         }

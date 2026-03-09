@@ -7,22 +7,34 @@
     xmlns:views="clr-namespace:AdoBuddy.Views"
     Title="AdoBuddy">
 
-    <TabBar>
-        <Tab Title="Home">
-            <ShellContent Title="Home"
-                          ContentTemplate="{DataTemplate local:MainPage}"
-                          Route="MainPage" />
+    <!-- Login — no chrome -->
+    <ShellContent Route="LoginPage"
+                  Shell.NavBarIsVisible="False"
+                  Shell.TabBarIsVisible="False"
+                  ContentTemplate="{DataTemplate views:LoginPage}" />
+
+    <!-- Projects list — no flyout, no tab bar -->
+    <ShellContent Route="ProjectsPage"
+                  Shell.FlyoutBehavior="Disabled"
+                  Shell.TabBarIsVisible="False"
+                  ContentTemplate="{DataTemplate views:ProjectsPage}" />
+
+    <!-- Per-project flyout navigation -->
+    <FlyoutItem x:Name="ProjectShell"
+                Route="ProjectShell"
+                Title="{Binding CurrentProjectName, Source={RelativeSource Self}}">
+        <Tab Title="Pull Requests">
+            <ShellContent Route="PullRequestsPage"
+                          ContentTemplate="{DataTemplate views:PullRequestsPage}" />
+        </Tab>
+        <Tab Title="Backlog">
+            <ShellContent Route="WorkItemsPage"
+                          ContentTemplate="{DataTemplate views:WorkItemsPage}" />
         </Tab>
         <Tab Title="Pipelines">
-            <ShellContent Title="Pipelines"
-                          ContentTemplate="{DataTemplate views:PipelinesPage}"
-                          Route="PipelinesPage" />
+            <ShellContent Route="PipelinesPage"
+                          ContentTemplate="{DataTemplate views:PipelinesPage}" />
         </Tab>
-        <Tab Title="Pull Requests">
-            <ShellContent Title="Pull Requests"
-                          ContentTemplate="{DataTemplate views:PullRequestsPage}"
-                          Route="PullRequestsPage" />
-        </Tab>
-    </TabBar>
+    </FlyoutItem>
 
 </Shell>

@@ -61,7 +61,7 @@ namespace AdoBuddy.Tests.ViewModels
         public async Task LoadPipelines_EmptyProject_ReturnsEmptyList()
         {
             var vm = new PipelinesViewModel(CreateService());
-            vm.SelectedProject = string.Empty;
+            vm.ProjectName = string.Empty;
 
             await vm.LoadPipelinesCommand.ExecuteAsync(null);
 
