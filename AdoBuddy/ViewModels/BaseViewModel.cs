@@ -5,9 +5,14 @@ namespace AdoBuddy.ViewModels
     public partial class BaseViewModel : ObservableObject
     {
         [ObservableProperty]
-        private bool isBusy;
+        public partial bool IsBusy { get; set; }
 
         [ObservableProperty]
-        private string title = string.Empty;
+        public partial string Title { get; set; }
+
+        protected BaseViewModel()
+        {
+            Title = string.Empty;
+        }
     }
 }
