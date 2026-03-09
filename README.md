@@ -59,7 +59,7 @@ The goal is to reduce friction for developers and teams who interact daily with 
 
 ### Run the project
 
-Clone the repository and open `AdoBuddy.sln` in Visual Studio, then select your target platform (Windows, Android or iOS).
+Clone the repository and open `AdoBuddy.slnx` in Visual Studio, then select your target platform (Windows, Android or iOS).
 
 ---
 
