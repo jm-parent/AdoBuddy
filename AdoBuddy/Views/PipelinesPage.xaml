@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:AdoBuddy.ViewModels"
+             xmlns:models="clr-namespace:AdoBuddy.Models"
+             x:Class="AdoBuddy.Views.PipelinesPage"
+             x:DataType="vm:PipelinesViewModel"
+             Title="{Binding Title}">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <VerticalStackLayout Grid.Row="0" Padding="16,8" Spacing="8">
+            <Entry Placeholder="Project name"
+                   Text="{Binding SelectedProject}" />
+            <Button Text="Load Pipelines"
+                    Command="{Binding LoadPipelinesCommand}"
+                    HorizontalOptions="Fill" />
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                               IsVisible="{Binding IsBusy}" />
+        </VerticalStackLayout>
+
+        <CollectionView Grid.Row="1" ItemsSource="{Binding PipelineRuns}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:PipelineRun">
+                    <Border Padding="16,8" Margin="8,4" StrokeShape="RoundRectangle 8">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="{Binding PipelineName}"
+                                   FontAttributes="Bold"
+                                   FontSize="16" />
+                            <HorizontalStackLayout Spacing="8">
+                                <Label Text="{Binding Status}" />
+                                <Label Text="{Binding Result}" />
+                            </HorizontalStackLayout>
+                            <Label Text="{Binding StartTime, StringFormat='{0:g}'}"
+                                   FontSize="12" />
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
+
+</ContentPage>
