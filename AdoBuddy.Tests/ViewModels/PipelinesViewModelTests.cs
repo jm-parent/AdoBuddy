@@ -10,7 +10,17 @@ namespace AdoBuddy.Tests.ViewModels
             new() { PipelineRunsResult = runs ?? new List<PipelineRun>() };
 
         [Fact]
-        public async Task LoadPipelines_PopulatesPipelineRuns()
+        public void ProjectName_WhenSet_UpdatesTitle()
+        {
+            var vm = new PipelinesViewModel(CreateService());
+
+            vm.ProjectName = "MyProject";
+
+            Assert.Equal("MyProject", vm.Title);
+        }
+
+        [Fact]
+        public void ProjectName_WhenSetToNonEmpty_AutoLoadsRuns()
         {
             var runs = new List<PipelineRun>
             {
@@ -19,11 +29,26 @@ namespace AdoBuddy.Tests.ViewModels
             };
             var vm = new PipelinesViewModel(CreateService(runs));
 
-            await vm.LoadPipelinesCommand.ExecuteAsync(null);
+            vm.ProjectName = "MyProject";
 
+            // FakeService is synchronous (Task.FromResult), so load completes before setter returns
             Assert.Equal(2, vm.PipelineRuns.Count);
             Assert.Equal("Build", vm.PipelineRuns[0].PipelineName);
             Assert.Equal("Deploy", vm.PipelineRuns[1].PipelineName);
+        }
+
+        [Fact]
+        public void ProjectName_WhenSetToEmpty_DoesNotTriggerLoad()
+        {
+            var runs = new List<PipelineRun>
+            {
+                new() { Id = 1, PipelineName = "Build", Status = "completed" }
+            };
+            var vm = new PipelinesViewModel(CreateService(runs));
+
+            vm.ProjectName = string.Empty;
+
+            Assert.Empty(vm.PipelineRuns);
         }
 
         [Fact]
@@ -34,7 +59,7 @@ namespace AdoBuddy.Tests.ViewModels
                 new() { Id = 1, PipelineName = "OldPipeline", Status = "completed" }
             });
             var vm = new PipelinesViewModel(service);
-            await vm.LoadPipelinesCommand.ExecuteAsync(null);
+            vm.ProjectName = "MyProject";
             Assert.Single(vm.PipelineRuns);
 
             service.PipelineRunsResult = new List<PipelineRun>
@@ -58,17 +83,6 @@ namespace AdoBuddy.Tests.ViewModels
         }
 
         [Fact]
-        public async Task LoadPipelines_EmptyProject_ReturnsEmptyList()
-        {
-            var vm = new PipelinesViewModel(CreateService());
-            vm.ProjectName = string.Empty;
-
-            await vm.LoadPipelinesCommand.ExecuteAsync(null);
-
-            Assert.Empty(vm.PipelineRuns);
-        }
-
-        [Fact]
         public void InitialState_IsBusyFalse_PipelineRunsEmpty()
         {
             var vm = new PipelinesViewModel(CreateService());
@@ -79,3 +93,4 @@ namespace AdoBuddy.Tests.ViewModels
         }
     }
 }
+

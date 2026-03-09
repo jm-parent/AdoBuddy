@@ -21,6 +21,10 @@ namespace AdoBuddy.ViewModels
         [ObservableProperty]
         public partial string ErrorMessage { get; set; }
 
+        public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
+
+        partial void OnErrorMessageChanged(string value) => OnPropertyChanged(nameof(HasError));
+
         public WorkItemsViewModel(IAzureDevOpsService service)
         {
             _service = service;

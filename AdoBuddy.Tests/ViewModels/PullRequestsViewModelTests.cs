@@ -10,7 +10,17 @@ namespace AdoBuddy.Tests.ViewModels
             new() { PullRequestsResult = prs ?? new List<PullRequest>() };
 
         [Fact]
-        public async Task LoadPullRequests_PopulatesPullRequests()
+        public void ProjectName_WhenSet_UpdatesTitle()
+        {
+            var vm = new PullRequestsViewModel(CreateService());
+
+            vm.ProjectName = "MyProject";
+
+            Assert.Equal("MyProject", vm.Title);
+        }
+
+        [Fact]
+        public void ProjectName_WhenSetToNonEmpty_AutoLoadsPullRequests()
         {
             var prs = new List<PullRequest>
             {
@@ -19,11 +29,26 @@ namespace AdoBuddy.Tests.ViewModels
             };
             var vm = new PullRequestsViewModel(CreateService(prs));
 
-            await vm.LoadPullRequestsCommand.ExecuteAsync(null);
+            vm.ProjectName = "MyProject";
 
+            // FakeService is synchronous (Task.FromResult), so load completes before setter returns
             Assert.Equal(2, vm.PullRequests.Count);
             Assert.Equal("Fix bug", vm.PullRequests[0].Title);
             Assert.Equal("Bob", vm.PullRequests[1].CreatedBy);
+        }
+
+        [Fact]
+        public void ProjectName_WhenSetToEmpty_DoesNotTriggerLoad()
+        {
+            var prs = new List<PullRequest>
+            {
+                new() { Id = 1, Title = "Some PR", CreatedBy = "Alice" }
+            };
+            var vm = new PullRequestsViewModel(CreateService(prs));
+
+            vm.ProjectName = string.Empty;
+
+            Assert.Empty(vm.PullRequests);
         }
 
         [Fact]
@@ -34,7 +59,7 @@ namespace AdoBuddy.Tests.ViewModels
                 new() { Id = 1, Title = "Old PR", CreatedBy = "Alice" }
             });
             var vm = new PullRequestsViewModel(service);
-            await vm.LoadPullRequestsCommand.ExecuteAsync(null);
+            vm.ProjectName = "MyProject";
             Assert.Single(vm.PullRequests);
 
             service.PullRequestsResult = new List<PullRequest>
@@ -58,17 +83,6 @@ namespace AdoBuddy.Tests.ViewModels
         }
 
         [Fact]
-        public async Task LoadPullRequests_EmptyProject_ReturnsEmptyList()
-        {
-            var vm = new PullRequestsViewModel(CreateService());
-            vm.ProjectName = string.Empty;
-
-            await vm.LoadPullRequestsCommand.ExecuteAsync(null);
-
-            Assert.Empty(vm.PullRequests);
-        }
-
-        [Fact]
         public void InitialState_IsBusyFalse_PullRequestsEmpty()
         {
             var vm = new PullRequestsViewModel(CreateService());
@@ -79,3 +93,4 @@ namespace AdoBuddy.Tests.ViewModels
         }
     }
 }
+

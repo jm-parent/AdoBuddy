@@ -6,6 +6,10 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace AdoBuddy.ViewModels
 {
+#if ANDROID || IOS || MACCATALYST || WINDOWS
+    [Microsoft.Maui.Controls.QueryProperty(nameof(ProjectName), "projectName")]
+    [Microsoft.Maui.Controls.QueryProperty(nameof(ProjectId), "projectId")]
+#endif
     public partial class PipelinesViewModel : BaseViewModel
     {
         private readonly IAzureDevOpsService _service;
@@ -13,7 +17,24 @@ namespace AdoBuddy.ViewModels
         public ObservableCollection<PipelineRun> PipelineRuns { get; } = new();
 
         [ObservableProperty]
-        public partial string ProjectName { get; set; }
+        public partial string ErrorMessage { get; set; }
+
+        public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
+
+        partial void OnErrorMessageChanged(string value) => OnPropertyChanged(nameof(HasError));
+
+        private string _projectName = string.Empty;
+        public string ProjectName
+        {
+            get => _projectName;
+            set
+            {
+                _projectName = value;
+                Title = value;
+                if (!string.IsNullOrEmpty(value))
+                    LoadPipelinesCommand.Execute(null);
+            }
+        }
 
         [ObservableProperty]
         public partial string ProjectId { get; set; }
@@ -22,14 +43,8 @@ namespace AdoBuddy.ViewModels
         {
             _service = service;
             Title = "Pipelines";
-            ProjectName = string.Empty;
             ProjectId = string.Empty;
-        }
-
-        partial void OnProjectNameChanged(string value)
-        {
-            if (!string.IsNullOrWhiteSpace(value))
-                LoadPipelinesCommand.Execute(null);
+            ErrorMessage = string.Empty;
         }
 
         [RelayCommand]
@@ -37,12 +52,17 @@ namespace AdoBuddy.ViewModels
         {
             if (IsBusy) return;
             IsBusy = true;
+            ErrorMessage = string.Empty;
             try
             {
                 var runs = await _service.GetPipelineRunsAsync(ProjectName);
                 PipelineRuns.Clear();
                 foreach (var run in runs)
                     PipelineRuns.Add(run);
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = $"Failed to load pipelines: {ex.Message}";
             }
             finally
             {
