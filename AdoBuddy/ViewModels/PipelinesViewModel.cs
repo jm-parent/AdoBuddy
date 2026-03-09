@@ -16,6 +16,13 @@ namespace AdoBuddy.ViewModels
 
         public ObservableCollection<PipelineRun> PipelineRuns { get; } = new();
 
+        [ObservableProperty]
+        public partial string ErrorMessage { get; set; }
+
+        public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
+
+        partial void OnErrorMessageChanged(string value) => OnPropertyChanged(nameof(HasError));
+
         private string _projectName = string.Empty;
         public string ProjectName
         {
@@ -37,6 +44,7 @@ namespace AdoBuddy.ViewModels
             _service = service;
             Title = "Pipelines";
             ProjectId = string.Empty;
+            ErrorMessage = string.Empty;
         }
 
         [RelayCommand]
@@ -44,12 +52,17 @@ namespace AdoBuddy.ViewModels
         {
             if (IsBusy) return;
             IsBusy = true;
+            ErrorMessage = string.Empty;
             try
             {
                 var runs = await _service.GetPipelineRunsAsync(ProjectName);
                 PipelineRuns.Clear();
                 foreach (var run in runs)
                     PipelineRuns.Add(run);
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = $"Failed to load pipelines: {ex.Message}";
             }
             finally
             {

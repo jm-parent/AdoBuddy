@@ -16,6 +16,13 @@ namespace AdoBuddy.ViewModels
 
         public ObservableCollection<PullRequest> PullRequests { get; } = new();
 
+        [ObservableProperty]
+        public partial string ErrorMessage { get; set; }
+
+        public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
+
+        partial void OnErrorMessageChanged(string value) => OnPropertyChanged(nameof(HasError));
+
         private string _projectName = string.Empty;
         public string ProjectName
         {
@@ -37,6 +44,7 @@ namespace AdoBuddy.ViewModels
             _service = service;
             Title = "Pull Requests";
             ProjectId = string.Empty;
+            ErrorMessage = string.Empty;
         }
 
         [RelayCommand]
@@ -44,12 +52,17 @@ namespace AdoBuddy.ViewModels
         {
             if (IsBusy) return;
             IsBusy = true;
+            ErrorMessage = string.Empty;
             try
             {
                 var prs = await _service.GetPullRequestsAsync(ProjectName);
                 PullRequests.Clear();
                 foreach (var pr in prs)
                     PullRequests.Add(pr);
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = $"Failed to load pull requests: {ex.Message}";
             }
             finally
             {

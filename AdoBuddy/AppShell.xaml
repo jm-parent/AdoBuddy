@@ -7,6 +7,14 @@
     xmlns:views="clr-namespace:AdoBuddy.Views"
     Title="AdoBuddy">
 
+    <Shell.FlyoutHeader>
+        <VerticalStackLayout BackgroundColor="{StaticResource Primary}" Padding="20,40,20,20">
+            <Label Text="AdoBuddy"
+                   FontSize="20" FontAttributes="Bold" TextColor="White" />
+            <Label Text="Azure DevOps Project" FontSize="13" TextColor="#CCE8FF" />
+        </VerticalStackLayout>
+    </Shell.FlyoutHeader>
+
     <!-- Login — no chrome -->
     <ShellContent Route="LoginPage"
                   Shell.NavBarIsVisible="False"

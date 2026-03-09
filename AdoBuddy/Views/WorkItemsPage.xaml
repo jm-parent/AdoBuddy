@@ -7,55 +7,46 @@
              x:DataType="vm:WorkItemsViewModel"
              Title="{Binding Title}">
 
-    <Grid RowDefinitions="Auto,Auto,*">
-
-        <ActivityIndicator Grid.Row="0"
+    <Grid RowDefinitions="*,Auto">
+        <ActivityIndicator Grid.RowSpan="2"
                            IsRunning="{Binding IsBusy}"
                            IsVisible="{Binding IsBusy}"
+                           Color="{StaticResource Primary}"
                            HorizontalOptions="Center"
-                           Margin="0,8" />
+                           VerticalOptions="Center" />
 
-        <Label Grid.Row="1"
-               Text="{Binding ErrorMessage}"
-               TextColor="Red"
-               IsVisible="True"
-               Margin="16,0">
-            <Label.Triggers>
-                <DataTrigger TargetType="Label" Binding="{Binding ErrorMessage}" Value="">
-                    <Setter Property="IsVisible" Value="False" />
-                </DataTrigger>
-            </Label.Triggers>
-        </Label>
-
-        <CollectionView Grid.Row="2"
-                        ItemsSource="{Binding WorkItems}"
-                        EmptyView="No work items found.">
+        <CollectionView Grid.Row="0" ItemsSource="{Binding WorkItems}" Margin="12,8">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:WorkItem">
-                    <Border Padding="16,12" Margin="8,4" StrokeShape="RoundRectangle 8">
-                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
-                            <Label Grid.Column="0"
-                                   Text="{Binding Id}"
-                                   FontSize="12"
-                                   VerticalOptions="Center" />
-                            <VerticalStackLayout Grid.Column="1" Spacing="2">
-                                <Label Text="{Binding Title}"
-                                       FontAttributes="Bold"
-                                       LineBreakMode="TailTruncation" />
-                                <Label Text="{Binding WorkItemType}" FontSize="12" />
+                    <Frame CornerRadius="10" HasShadow="True" Padding="14" Margin="0,0,0,8"
+                           BackgroundColor="{AppThemeBinding Light=White, Dark=#2D2D2D}">
+                        <Grid ColumnDefinitions="Auto,*,Auto">
+                            <!-- Type badge -->
+                            <Frame Grid.Column="0" CornerRadius="6" WidthRequest="8" HeightRequest="36"
+                                   BackgroundColor="{StaticResource Primary}" Padding="0" Margin="0,0,12,0" />
+                            <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                <Label Text="{Binding Title}" FontSize="15" FontAttributes="Bold"
+                                       MaxLines="2" LineBreakMode="TailTruncation" />
+                                <HorizontalStackLayout Spacing="8">
+                                    <Label Text="{Binding WorkItemType}" FontSize="12" Opacity="0.6" />
+                                    <Label Text="•" FontSize="12" Opacity="0.4" />
+                                    <Label Text="{Binding Id, StringFormat='#{0}'}" FontSize="12" Opacity="0.6" />
+                                </HorizontalStackLayout>
                             </VerticalStackLayout>
-                            <Border Grid.Column="2"
-                                    Padding="8,4"
-                                    StrokeShape="RoundRectangle 8"
-                                    VerticalOptions="Center">
-                                <Label Text="{Binding State}" FontSize="11" />
-                            </Border>
+                            <!-- State chip -->
+                            <Frame Grid.Column="2" CornerRadius="12" Padding="8,4"
+                                   BackgroundColor="{StaticResource Tertiary}" VerticalOptions="Center">
+                                <Label Text="{Binding State}" FontSize="11" TextColor="White" />
+                            </Frame>
                         </Grid>
-                    </Border>
+                    </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
 
+        <Label Grid.Row="1" Text="{Binding ErrorMessage}" TextColor="Red"
+               IsVisible="{Binding HasError}" Margin="16,8" FontSize="13" />
     </Grid>
 
 </ContentPage>
+
