@@ -6,7 +6,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <StyleResource xmlns="http://schemas.enisn-projects.io/dotnet/maui/uraniumui" />
+                <StyleResource xmlns="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material" />
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>

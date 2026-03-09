@@ -32,7 +32,6 @@
 
                     <material:TextField Title="Organization URL"
                                         Text="{Binding OrganizationUrl}"
-                                        Placeholder="https://dev.azure.com/myorg"
                                         Keyboard="Url" />
 
                     <material:TextField Title="Personal Access Token"

@@ -2,21 +2,22 @@
 {
     public partial class App : Application
     {
-        private readonly AppShell _shell;
-
-        public App(AppShell shell)
+        public App()
         {
             InitializeComponent();
-            _shell = shell;
         }
 
-        protected override Window CreateWindow(IActivationState? activationState) =>
-            new Window(_shell);
+        protected override Window CreateWindow(IActivationState? activationState)
+        {
+            var shell = IPlatformApplication.Current!.Services.GetRequiredService<AppShell>();
+            return new Window(shell);
+        }
 
         protected override async void OnStart()
         {
             base.OnStart();
-            await _shell.NavigateToInitialPageAsync();
+            var shell = IPlatformApplication.Current!.Services.GetRequiredService<AppShell>();
+            await shell.NavigateToInitialPageAsync();
         }
     }
 }
