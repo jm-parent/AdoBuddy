@@ -5,51 +5,59 @@
              xmlns:models="clr-namespace:AdoBuddy.Models"
              x:Class="AdoBuddy.Views.ProjectsPage"
              x:DataType="vm:ProjectsViewModel"
-             Title="{Binding Title}">
+             Title="Projects">
 
-    <Grid RowDefinitions="Auto,Auto,*">
+    <Grid RowDefinitions="Auto,*">
 
-        <ActivityIndicator Grid.Row="0"
-                           IsRunning="{Binding IsBusy}"
-                           IsVisible="{Binding IsBusy}"
-                           HorizontalOptions="Center"
-                           Margin="0,8" />
+        <!-- Header bar -->
+        <VerticalStackLayout Grid.Row="0" BackgroundColor="{StaticResource Primary}" Padding="20,16">
+            <Label Text="Select a Project" FontSize="22" FontAttributes="Bold"
+                   TextColor="White" />
+            <Label Text="Choose an Azure DevOps project to explore"
+                   FontSize="13" TextColor="#CCE8FF" />
+        </VerticalStackLayout>
 
-        <Label Grid.Row="1"
-               Text="{Binding ErrorMessage}"
-               TextColor="Red"
-               IsVisible="True"
-               Margin="16,0">
-            <Label.Triggers>
-                <DataTrigger TargetType="Label" Binding="{Binding ErrorMessage}" Value="">
-                    <Setter Property="IsVisible" Value="False" />
-                </DataTrigger>
-            </Label.Triggers>
-        </Label>
+        <!-- Content -->
+        <Grid Grid.Row="1">
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                               Color="{StaticResource Primary}"
+                               VerticalOptions="Center" HorizontalOptions="Center" />
 
-        <CollectionView Grid.Row="2"
-                        ItemsSource="{Binding Projects}"
-                        SelectedItem="{Binding SelectedProject}"
-                        SelectionMode="Single"
-                        EmptyView="No projects found. Check your credentials and connection.">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="models:AzureDevOpsProject">
-                    <Border Padding="16,12" Margin="8,4" StrokeShape="RoundRectangle 8">
-                        <VerticalStackLayout Spacing="4">
-                            <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="16" />
-                            <Label Text="{Binding Description}" FontSize="13" IsVisible="True">
-                                <Label.Triggers>
-                                    <DataTrigger TargetType="Label" Binding="{Binding Description}" Value="">
-                                        <Setter Property="IsVisible" Value="False" />
-                                    </DataTrigger>
-                                </Label.Triggers>
-                            </Label>
-                        </VerticalStackLayout>
-                    </Border>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-
+            <CollectionView ItemsSource="{Binding Projects}"
+                            IsVisible="{Binding IsNotBusy}"
+                            SelectionMode="Single"
+                            SelectionChanged="OnProjectSelected"
+                            Margin="16,12">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:AzureDevOpsProject">
+                        <Frame CornerRadius="12" HasShadow="True" Padding="16"
+                               Margin="0,0,0,10"
+                               BackgroundColor="{AppThemeBinding Light=White, Dark=#2D2D2D}">
+                            <Grid ColumnDefinitions="Auto,*,Auto">
+                                <!-- Project icon -->
+                                <Frame Grid.Column="0" CornerRadius="10"
+                                       BackgroundColor="{StaticResource Primary}"
+                                       WidthRequest="44" HeightRequest="44" Padding="0"
+                                       VerticalOptions="Center" Margin="0,0,12,0">
+                                    <Label Text="&#xf07b;" FontFamily="FontAwesomeSolid"
+                                           FontSize="20" TextColor="White"
+                                           HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Frame>
+                                <!-- Name + description -->
+                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                    <Label Text="{Binding Name}" FontSize="16" FontAttributes="Bold" />
+                                    <Label Text="{Binding Description}" FontSize="13" Opacity="0.6"
+                                           MaxLines="1" LineBreakMode="TailTruncation" />
+                                </VerticalStackLayout>
+                                <!-- Chevron -->
+                                <Label Grid.Column="2" Text="&#xf054;" FontFamily="FontAwesomeSolid"
+                                       FontSize="14" Opacity="0.4" VerticalOptions="Center" />
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
     </Grid>
 
 </ContentPage>

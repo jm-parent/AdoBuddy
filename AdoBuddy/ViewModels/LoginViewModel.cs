@@ -20,6 +20,10 @@ namespace AdoBuddy.ViewModels
         [ObservableProperty]
         public partial string ErrorMessage { get; set; }
 
+        public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
+
+        partial void OnErrorMessageChanged(string value) => OnPropertyChanged(nameof(HasError));
+
         [ObservableProperty]
         public partial bool IsLoginSuccessful { get; set; }
 
