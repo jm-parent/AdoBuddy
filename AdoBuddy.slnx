@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="AdoBuddy/AdoBuddy.csproj" />
+  <Project Path="AdoBuddy.Tests/AdoBuddy.Tests.csproj" />
 </Solution>

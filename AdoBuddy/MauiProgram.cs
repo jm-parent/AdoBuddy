@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using AdoBuddy.ViewModels;
+using Microsoft.Extensions.Logging;
 
 namespace AdoBuddy
 {
@@ -18,6 +19,9 @@ namespace AdoBuddy
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
+
+            builder.Services.AddTransient<MainViewModel>();
+            builder.Services.AddTransient<MainPage>();
 
             return builder.Build();
         }
