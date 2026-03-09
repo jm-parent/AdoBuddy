@@ -2,6 +2,7 @@
 using AdoBuddy.ViewModels;
 using AdoBuddy.Views;
 using Microsoft.Extensions.Logging;
+using UraniumUI;
 
 namespace AdoBuddy
 {
@@ -12,6 +13,8 @@ namespace AdoBuddy
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseUraniumUI()
+                .UseUraniumUIMaterial()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

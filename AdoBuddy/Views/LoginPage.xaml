@@ -2,51 +2,62 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:AdoBuddy.ViewModels"
+             xmlns:uranium="http://schemas.enisn-projects.io/dotnet/maui/uraniumui"
+             xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
              x:Class="AdoBuddy.Views.LoginPage"
              x:DataType="vm:LoginViewModel"
-             Title="{Binding Title}">
+             Shell.NavBarIsVisible="False">
 
     <ScrollView>
-        <VerticalStackLayout Padding="30" Spacing="20" VerticalOptions="Center">
+        <VerticalStackLayout Padding="32,60,32,32" Spacing="0" VerticalOptions="Center">
 
-            <Image Source="dotnet_bot.png" HeightRequest="100" Aspect="AspectFit" HorizontalOptions="Center" />
+            <!-- Logo / Header -->
+            <Frame CornerRadius="24" BackgroundColor="{StaticResource Primary}"
+                   WidthRequest="80" HeightRequest="80" HorizontalOptions="Center"
+                   HasShadow="True" Padding="0" Margin="0,0,0,24">
+                <Label Text="&#xf2bb;" FontFamily="FontAwesomeRegular"
+                       FontSize="40" TextColor="White"
+                       HorizontalOptions="Center" VerticalOptions="Center" />
+            </Frame>
 
-            <Label Text="AdoBuddy" Style="{StaticResource Headline}" HorizontalOptions="Center"
-                   SemanticProperties.HeadingLevel="Level1" />
+            <Label Text="AdoBuddy" FontSize="32" FontAttributes="Bold"
+                   HorizontalOptions="Center" Margin="0,0,0,4" />
+            <Label Text="Sign in to Azure DevOps" FontSize="16" Opacity="0.6"
+                   HorizontalOptions="Center" Margin="0,0,0,40" />
 
-            <Label Text="Sign in with your Azure DevOps credentials"
-                   Style="{StaticResource SubHeadline}" HorizontalOptions="Center" />
+            <!-- Card -->
+            <Frame CornerRadius="16" HasShadow="True" Padding="24"
+                   BackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}">
+                <VerticalStackLayout Spacing="16">
 
-            <Label Text="Organization URL" FontAttributes="Bold" />
-            <Entry Text="{Binding OrganizationUrl}"
-                   Placeholder="https://dev.azure.com/myorg"
-                   Keyboard="Url" ReturnType="Next" />
+                    <material:TextField Title="Organization URL"
+                                        Text="{Binding OrganizationUrl}"
+                                        Placeholder="https://dev.azure.com/myorg"
+                                        Keyboard="Url" />
 
-            <Label Text="Personal Access Token" FontAttributes="Bold" />
-            <Entry Text="{Binding Pat}"
-                   Placeholder="Enter your PAT"
-                   IsPassword="True" ReturnType="Go"
-                   ReturnCommand="{Binding LoginCommand}" />
+                    <material:TextField Title="Personal Access Token"
+                                        Text="{Binding Pat}"
+                                        IsPassword="True" />
 
-            <Label Text="{Binding ErrorMessage}" TextColor="Red" IsVisible="True" HorizontalOptions="Center">
-                <Label.Triggers>
-                    <DataTrigger TargetType="Label" Binding="{Binding ErrorMessage}" Value="">
-                        <Setter Property="IsVisible" Value="False" />
-                    </DataTrigger>
-                </Label.Triggers>
-            </Label>
+                    <!-- Error message -->
+                    <Label Text="{Binding ErrorMessage}" TextColor="Red"
+                           IsVisible="{Binding HasError}"
+                           FontSize="13" Margin="4,0,0,0" />
 
-            <Button Text="Sign In" Command="{Binding LoginCommand}" HorizontalOptions="Fill">
-                <Button.Triggers>
-                    <DataTrigger TargetType="Button" Binding="{Binding IsBusy}" Value="True">
-                        <Setter Property="IsEnabled" Value="False" />
-                    </DataTrigger>
-                </Button.Triggers>
-            </Button>
+                    <Button Text="Sign In"
+                            Command="{Binding LoginCommand}"
+                            BackgroundColor="{StaticResource Primary}"
+                            TextColor="White"
+                            CornerRadius="8"
+                            HeightRequest="48"
+                            Margin="0,8,0,0" />
 
-            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" HorizontalOptions="Center" />
-
+                    <ActivityIndicator IsRunning="{Binding IsBusy}"
+                                       IsVisible="{Binding IsBusy}"
+                                       Color="{StaticResource Primary}"
+                                       HorizontalOptions="Center" />
+                </VerticalStackLayout>
+            </Frame>
         </VerticalStackLayout>
     </ScrollView>
-
 </ContentPage>

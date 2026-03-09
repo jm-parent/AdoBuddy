@@ -68,10 +68,19 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<!-- Disable SourceGen for files that use 3rd-party XAML namespaces unsupported by the SourceGen parser -->
+		<MauiXaml Update="App.xaml" Inflator="Runtime" />
+		<MauiXaml Update="Views\LoginPage.xaml" Inflator="Runtime" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+		<PackageReference Include="InputKit.Maui" Version="4.6.0" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="10.0.0" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
+		<PackageReference Include="UraniumUI" Version="2.10.1" />
+		<PackageReference Include="UraniumUI.Material" Version="2.10.1" />
 	</ItemGroup>
 
 </Project>

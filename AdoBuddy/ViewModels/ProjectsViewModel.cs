@@ -15,6 +15,8 @@ namespace AdoBuddy.ViewModels
         [ObservableProperty]
         public partial string ErrorMessage { get; set; }
 
+        public bool IsNotBusy => !IsBusy;
+
         /// <summary>Set by the view when user taps a project; code-behind handles navigation.</summary>
         [ObservableProperty]
         public partial AzureDevOpsProject? SelectedProject { get; set; }
@@ -24,6 +26,11 @@ namespace AdoBuddy.ViewModels
             _service = service;
             ErrorMessage = string.Empty;
             Title = "Select a Project";
+            PropertyChanged += (_, e) =>
+            {
+                if (e.PropertyName == nameof(IsBusy))
+                    OnPropertyChanged(nameof(IsNotBusy));
+            };
         }
 
         [RelayCommand]
