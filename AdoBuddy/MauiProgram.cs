@@ -1,4 +1,6 @@
-﻿using AdoBuddy.ViewModels;
+﻿using AdoBuddy.Services;
+using AdoBuddy.ViewModels;
+using AdoBuddy.Views;
 using Microsoft.Extensions.Logging;
 
 namespace AdoBuddy
@@ -20,8 +22,18 @@ namespace AdoBuddy
     		builder.Logging.AddDebug();
 #endif
 
+            builder.Services.AddHttpClient();
+
+            builder.Services.AddSingleton<IAzureDevOpsService, AzureDevOpsService>();
+
             builder.Services.AddTransient<MainViewModel>();
             builder.Services.AddTransient<MainPage>();
+
+            builder.Services.AddTransient<PipelinesViewModel>();
+            builder.Services.AddTransient<PipelinesPage>();
+
+            builder.Services.AddTransient<PullRequestsViewModel>();
+            builder.Services.AddTransient<PullRequestsPage>();
 
             return builder.Build();
         }

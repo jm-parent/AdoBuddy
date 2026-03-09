@@ -4,11 +4,25 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:AdoBuddy"
+    xmlns:views="clr-namespace:AdoBuddy.Views"
     Title="AdoBuddy">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <TabBar>
+        <Tab Title="Home">
+            <ShellContent Title="Home"
+                          ContentTemplate="{DataTemplate local:MainPage}"
+                          Route="MainPage" />
+        </Tab>
+        <Tab Title="Pipelines">
+            <ShellContent Title="Pipelines"
+                          ContentTemplate="{DataTemplate views:PipelinesPage}"
+                          Route="PipelinesPage" />
+        </Tab>
+        <Tab Title="Pull Requests">
+            <ShellContent Title="Pull Requests"
+                          ContentTemplate="{DataTemplate views:PullRequestsPage}"
+                          Route="PullRequestsPage" />
+        </Tab>
+    </TabBar>
 
 </Shell>
