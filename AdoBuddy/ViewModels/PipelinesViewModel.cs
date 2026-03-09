@@ -6,14 +6,28 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace AdoBuddy.ViewModels
 {
+#if ANDROID || IOS || MACCATALYST || WINDOWS
+    [Microsoft.Maui.Controls.QueryProperty(nameof(ProjectName), "projectName")]
+    [Microsoft.Maui.Controls.QueryProperty(nameof(ProjectId), "projectId")]
+#endif
     public partial class PipelinesViewModel : BaseViewModel
     {
         private readonly IAzureDevOpsService _service;
 
         public ObservableCollection<PipelineRun> PipelineRuns { get; } = new();
 
-        [ObservableProperty]
-        public partial string ProjectName { get; set; }
+        private string _projectName = string.Empty;
+        public string ProjectName
+        {
+            get => _projectName;
+            set
+            {
+                _projectName = value;
+                Title = value;
+                if (!string.IsNullOrEmpty(value))
+                    LoadPipelinesCommand.Execute(null);
+            }
+        }
 
         [ObservableProperty]
         public partial string ProjectId { get; set; }
@@ -22,14 +36,7 @@ namespace AdoBuddy.ViewModels
         {
             _service = service;
             Title = "Pipelines";
-            ProjectName = string.Empty;
             ProjectId = string.Empty;
-        }
-
-        partial void OnProjectNameChanged(string value)
-        {
-            if (!string.IsNullOrWhiteSpace(value))
-                LoadPipelinesCommand.Execute(null);
         }
 
         [RelayCommand]

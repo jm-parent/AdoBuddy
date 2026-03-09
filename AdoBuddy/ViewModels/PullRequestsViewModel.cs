@@ -6,14 +6,28 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace AdoBuddy.ViewModels
 {
+#if ANDROID || IOS || MACCATALYST || WINDOWS
+    [Microsoft.Maui.Controls.QueryProperty(nameof(ProjectName), "projectName")]
+    [Microsoft.Maui.Controls.QueryProperty(nameof(ProjectId), "projectId")]
+#endif
     public partial class PullRequestsViewModel : BaseViewModel
     {
         private readonly IAzureDevOpsService _service;
 
         public ObservableCollection<PullRequest> PullRequests { get; } = new();
 
-        [ObservableProperty]
-        public partial string ProjectName { get; set; }
+        private string _projectName = string.Empty;
+        public string ProjectName
+        {
+            get => _projectName;
+            set
+            {
+                _projectName = value;
+                Title = value;
+                if (!string.IsNullOrEmpty(value))
+                    LoadPullRequestsCommand.Execute(null);
+            }
+        }
 
         [ObservableProperty]
         public partial string ProjectId { get; set; }
@@ -22,14 +36,7 @@ namespace AdoBuddy.ViewModels
         {
             _service = service;
             Title = "Pull Requests";
-            ProjectName = string.Empty;
             ProjectId = string.Empty;
-        }
-
-        partial void OnProjectNameChanged(string value)
-        {
-            if (!string.IsNullOrWhiteSpace(value))
-                LoadPullRequestsCommand.Execute(null);
         }
 
         [RelayCommand]
@@ -51,3 +58,4 @@ namespace AdoBuddy.ViewModels
         }
     }
 }
+
