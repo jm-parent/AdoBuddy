@@ -11,7 +11,7 @@
 
         <VerticalStackLayout Grid.Row="0" Padding="16,8" Spacing="8">
             <Entry Placeholder="Project name"
-                   Text="{Binding SelectedProject}" />
+                   Text="{Binding ProjectName}" />
             <Button Text="Load Pipelines"
                     Command="{Binding LoadPipelinesCommand}"
                     HorizontalOptions="Fill" />

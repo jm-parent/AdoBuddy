@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:AdoBuddy.ViewModels"
+             xmlns:models="clr-namespace:AdoBuddy.Models"
+             x:Class="AdoBuddy.Views.WorkItemsPage"
+             x:DataType="vm:WorkItemsViewModel"
+             Title="{Binding Title}">
+
+    <Grid RowDefinitions="Auto,Auto,*">
+
+        <ActivityIndicator Grid.Row="0"
+                           IsRunning="{Binding IsBusy}"
+                           IsVisible="{Binding IsBusy}"
+                           HorizontalOptions="Center"
+                           Margin="0,8" />
+
+        <Label Grid.Row="1"
+               Text="{Binding ErrorMessage}"
+               TextColor="Red"
+               IsVisible="True"
+               Margin="16,0">
+            <Label.Triggers>
+                <DataTrigger TargetType="Label" Binding="{Binding ErrorMessage}" Value="">
+                    <Setter Property="IsVisible" Value="False" />
+                </DataTrigger>
+            </Label.Triggers>
+        </Label>
+
+        <CollectionView Grid.Row="2"
+                        ItemsSource="{Binding WorkItems}"
+                        EmptyView="No work items found.">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:WorkItem">
+                    <Border Padding="16,12" Margin="8,4" StrokeShape="RoundRectangle 8">
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                            <Label Grid.Column="0"
+                                   Text="{Binding Id}"
+                                   FontSize="12"
+                                   VerticalOptions="Center" />
+                            <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                <Label Text="{Binding Title}"
+                                       FontAttributes="Bold"
+                                       LineBreakMode="TailTruncation" />
+                                <Label Text="{Binding WorkItemType}" FontSize="12" />
+                            </VerticalStackLayout>
+                            <Border Grid.Column="2"
+                                    Padding="8,4"
+                                    StrokeShape="RoundRectangle 8"
+                                    VerticalOptions="Center">
+                                <Label Text="{Binding State}" FontSize="11" />
+                            </Border>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
+
+</ContentPage>

@@ -3,12 +3,12 @@ using AdoBuddy.ViewModels;
 
 namespace AdoBuddy.Views
 {
-    public partial class PullRequestsPage : ContentPage, IQueryAttributable
+    public partial class WorkItemsPage : ContentPage, IQueryAttributable
     {
-        private readonly PullRequestsViewModel _vm;
+        private readonly WorkItemsViewModel _vm;
         private readonly ProjectContext _projectContext;
 
-        public PullRequestsPage(PullRequestsViewModel viewModel, ProjectContext projectContext)
+        public WorkItemsPage(WorkItemsViewModel viewModel, ProjectContext projectContext)
         {
             InitializeComponent();
             BindingContext = _vm = viewModel;

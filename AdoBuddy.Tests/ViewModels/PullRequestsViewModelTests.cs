@@ -61,7 +61,7 @@ namespace AdoBuddy.Tests.ViewModels
         public async Task LoadPullRequests_EmptyProject_ReturnsEmptyList()
         {
             var vm = new PullRequestsViewModel(CreateService());
-            vm.SelectedProject = string.Empty;
+            vm.ProjectName = string.Empty;
 
             await vm.LoadPullRequestsCommand.ExecuteAsync(null);
 

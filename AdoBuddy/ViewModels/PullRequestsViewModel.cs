@@ -13,13 +13,23 @@ namespace AdoBuddy.ViewModels
         public ObservableCollection<PullRequest> PullRequests { get; } = new();
 
         [ObservableProperty]
-        public partial string SelectedProject { get; set; }
+        public partial string ProjectName { get; set; }
+
+        [ObservableProperty]
+        public partial string ProjectId { get; set; }
 
         public PullRequestsViewModel(IAzureDevOpsService service)
         {
             _service = service;
             Title = "Pull Requests";
-            SelectedProject = string.Empty;
+            ProjectName = string.Empty;
+            ProjectId = string.Empty;
+        }
+
+        partial void OnProjectNameChanged(string value)
+        {
+            if (!string.IsNullOrWhiteSpace(value))
+                LoadPullRequestsCommand.Execute(null);
         }
 
         [RelayCommand]
@@ -29,7 +39,7 @@ namespace AdoBuddy.ViewModels
             IsBusy = true;
             try
             {
-                var prs = await _service.GetPullRequestsAsync(SelectedProject);
+                var prs = await _service.GetPullRequestsAsync(ProjectName);
                 PullRequests.Clear();
                 foreach (var pr in prs)
                     PullRequests.Add(pr);

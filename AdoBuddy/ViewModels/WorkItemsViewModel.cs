@@ -6,11 +6,11 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace AdoBuddy.ViewModels
 {
-    public partial class PipelinesViewModel : BaseViewModel
+    public partial class WorkItemsViewModel : BaseViewModel
     {
         private readonly IAzureDevOpsService _service;
 
-        public ObservableCollection<PipelineRun> PipelineRuns { get; } = new();
+        public ObservableCollection<WorkItem> WorkItems { get; } = [];
 
         [ObservableProperty]
         public partial string ProjectName { get; set; }
@@ -18,31 +18,40 @@ namespace AdoBuddy.ViewModels
         [ObservableProperty]
         public partial string ProjectId { get; set; }
 
-        public PipelinesViewModel(IAzureDevOpsService service)
+        [ObservableProperty]
+        public partial string ErrorMessage { get; set; }
+
+        public WorkItemsViewModel(IAzureDevOpsService service)
         {
             _service = service;
-            Title = "Pipelines";
             ProjectName = string.Empty;
             ProjectId = string.Empty;
+            ErrorMessage = string.Empty;
+            Title = "Backlog";
         }
 
         partial void OnProjectNameChanged(string value)
         {
             if (!string.IsNullOrWhiteSpace(value))
-                LoadPipelinesCommand.Execute(null);
+                LoadWorkItemsCommand.Execute(null);
         }
 
         [RelayCommand]
-        private async Task LoadPipelinesAsync()
+        private async Task LoadWorkItemsAsync()
         {
             if (IsBusy) return;
             IsBusy = true;
+            ErrorMessage = string.Empty;
+            WorkItems.Clear();
             try
             {
-                var runs = await _service.GetPipelineRunsAsync(ProjectName);
-                PipelineRuns.Clear();
-                foreach (var run in runs)
-                    PipelineRuns.Add(run);
+                var items = await _service.GetWorkItemsAsync(ProjectName);
+                foreach (var item in items)
+                    WorkItems.Add(item);
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = $"Failed to load work items: {ex.Message}";
             }
             finally
             {
@@ -51,4 +60,3 @@ namespace AdoBuddy.ViewModels
         }
     }
 }
-

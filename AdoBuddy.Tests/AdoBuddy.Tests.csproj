@@ -14,13 +14,19 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\AdoBuddy\Models\AzureDevOpsProject.cs" Link="Models\AzureDevOpsProject.cs" />
     <Compile Include="..\AdoBuddy\Models\PipelineRun.cs" Link="Models\PipelineRun.cs" />
     <Compile Include="..\AdoBuddy\Models\PullRequest.cs" Link="Models\PullRequest.cs" />
+    <Compile Include="..\AdoBuddy\Models\WorkItem.cs" Link="Models\WorkItem.cs" />
     <Compile Include="..\AdoBuddy\Services\IAzureDevOpsService.cs" Link="Services\IAzureDevOpsService.cs" />
+    <Compile Include="..\AdoBuddy\Services\ICredentialStore.cs" Link="Services\ICredentialStore.cs" />
     <Compile Include="..\AdoBuddy\ViewModels\BaseViewModel.cs" Link="ViewModels\BaseViewModel.cs" />
     <Compile Include="..\AdoBuddy\ViewModels\MainViewModel.cs" Link="ViewModels\MainViewModel.cs" />
+    <Compile Include="..\AdoBuddy\ViewModels\LoginViewModel.cs" Link="ViewModels\LoginViewModel.cs" />
+    <Compile Include="..\AdoBuddy\ViewModels\ProjectsViewModel.cs" Link="ViewModels\ProjectsViewModel.cs" />
     <Compile Include="..\AdoBuddy\ViewModels\PipelinesViewModel.cs" Link="ViewModels\PipelinesViewModel.cs" />
     <Compile Include="..\AdoBuddy\ViewModels\PullRequestsViewModel.cs" Link="ViewModels\PullRequestsViewModel.cs" />
+    <Compile Include="..\AdoBuddy\ViewModels\WorkItemsViewModel.cs" Link="ViewModels\WorkItemsViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Using Include="Xunit" />

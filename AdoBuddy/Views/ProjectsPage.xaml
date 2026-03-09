@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:AdoBuddy.ViewModels"
+             xmlns:models="clr-namespace:AdoBuddy.Models"
+             x:Class="AdoBuddy.Views.ProjectsPage"
+             x:DataType="vm:ProjectsViewModel"
+             Title="{Binding Title}">
+
+    <Grid RowDefinitions="Auto,Auto,*">
+
+        <ActivityIndicator Grid.Row="0"
+                           IsRunning="{Binding IsBusy}"
+                           IsVisible="{Binding IsBusy}"
+                           HorizontalOptions="Center"
+                           Margin="0,8" />
+
+        <Label Grid.Row="1"
+               Text="{Binding ErrorMessage}"
+               TextColor="Red"
+               IsVisible="True"
+               Margin="16,0">
+            <Label.Triggers>
+                <DataTrigger TargetType="Label" Binding="{Binding ErrorMessage}" Value="">
+                    <Setter Property="IsVisible" Value="False" />
+                </DataTrigger>
+            </Label.Triggers>
+        </Label>
+
+        <CollectionView Grid.Row="2"
+                        ItemsSource="{Binding Projects}"
+                        SelectedItem="{Binding SelectedProject}"
+                        SelectionMode="Single"
+                        EmptyView="No projects found. Check your credentials and connection.">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:AzureDevOpsProject">
+                    <Border Padding="16,12" Margin="8,4" StrokeShape="RoundRectangle 8">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="16" />
+                            <Label Text="{Binding Description}" FontSize="13" IsVisible="True">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding Description}" Value="">
+                                        <Setter Property="IsVisible" Value="False" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
+
+</ContentPage>

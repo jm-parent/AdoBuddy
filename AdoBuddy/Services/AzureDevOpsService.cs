@@ -35,6 +35,57 @@ namespace AdoBuddy.Services
             }
         }
 
+        public async Task<List<AzureDevOpsProject>> GetProjectsAsync()
+        {
+            var client = await CreateAuthenticatedClientAsync();
+
+            var response = await client.GetAsync("_apis/projects?api-version=7.1");
+            response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadAsStringAsync();
+            var result = JsonSerializer.Deserialize<ListResponse<ProjectDto>>(json, JsonOptions);
+
+            if (result?.Value is null)
+                return [];
+
+            return result.Value.Select(dto => new AzureDevOpsProject
+            {
+                Id = dto.Id,
+                Name = dto.Name,
+                Description = dto.Description ?? string.Empty
+            }).ToList();
+        }
+
+        public async Task<List<WorkItem>> GetWorkItemsAsync(string project)
+        {
+            var client = await CreateAuthenticatedClientAsync();
+
+            // Step 1: WIQL query to get IDs
+            const string wiqlQuery = "SELECT [System.Id],[System.Title],[System.State],[System.WorkItemType] " +
+                                     "FROM WorkItems WHERE [System.TeamProject] = @project " +
+                                     "ORDER BY [System.ChangedDate] DESC";
+            var wiqlBody = JsonSerializer.Serialize(new { query = wiqlQuery });
+            using var content = new StringContent(wiqlBody, Encoding.UTF8, "application/json");
+
+            var wiqlResponse = await client.PostAsync(
+                $"{project}/_apis/wit/wiql?api-version=7.1", content);
+            wiqlResponse.EnsureSuccessStatusCode();
+
+            var wiqlJson = await wiqlResponse.Content.ReadAsStringAsync();
+            var ids = ParseWiqlIds(wiqlJson);
+            if (ids.Count == 0) return [];
+
+            // Step 2: Batch fetch work item details
+            var idsParam = string.Join(",", ids.Take(200));
+            var fields = "System.Id,System.Title,System.State,System.WorkItemType";
+            var itemsResponse = await client.GetAsync(
+                $"_apis/wit/workitems?ids={idsParam}&fields={fields}&api-version=7.1");
+            itemsResponse.EnsureSuccessStatusCode();
+
+            var itemsJson = await itemsResponse.Content.ReadAsStringAsync();
+            return ParseWorkItems(itemsJson);
+        }
+
         public async Task<List<PipelineRun>> GetPipelineRunsAsync(string project)
         {
             var client = await CreateAuthenticatedClientAsync();
@@ -128,6 +179,49 @@ namespace AdoBuddy.Services
         }
 
         // Private DTOs used only for JSON deserialization
+
+        private static List<int> ParseWiqlIds(string json)
+        {
+            using var doc = System.Text.Json.JsonDocument.Parse(json);
+            var ids = new List<int>();
+            if (doc.RootElement.TryGetProperty("workItems", out var workItems))
+                foreach (var item in workItems.EnumerateArray())
+                    if (item.TryGetProperty("id", out var id))
+                        ids.Add(id.GetInt32());
+            return ids;
+        }
+
+        private static List<WorkItem> ParseWorkItems(string json)
+        {
+            using var doc = System.Text.Json.JsonDocument.Parse(json);
+            var result = new List<WorkItem>();
+            if (!doc.RootElement.TryGetProperty("value", out var value)) return result;
+            foreach (var item in value.EnumerateArray())
+            {
+                var wi = new WorkItem();
+                if (item.TryGetProperty("id", out var id)) wi.Id = id.GetInt32();
+                if (item.TryGetProperty("fields", out var fields))
+                {
+                    if (fields.TryGetProperty("System.Title", out var t)) wi.Title = t.GetString() ?? string.Empty;
+                    if (fields.TryGetProperty("System.State", out var s)) wi.State = s.GetString() ?? string.Empty;
+                    if (fields.TryGetProperty("System.WorkItemType", out var w)) wi.WorkItemType = w.GetString() ?? string.Empty;
+                }
+                result.Add(wi);
+            }
+            return result;
+        }
+
+        private class ProjectDto
+        {
+            [JsonPropertyName("id")]
+            public string Id { get; set; } = string.Empty;
+
+            [JsonPropertyName("name")]
+            public string Name { get; set; } = string.Empty;
+
+            [JsonPropertyName("description")]
+            public string? Description { get; set; }
+        }
 
         private class ListResponse<T>
         {

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:AdoBuddy.ViewModels"
+             x:Class="AdoBuddy.Views.LoginPage"
+             x:DataType="vm:LoginViewModel"
+             Title="{Binding Title}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="30" Spacing="20" VerticalOptions="Center">
+
+            <Image Source="dotnet_bot.png" HeightRequest="100" Aspect="AspectFit" HorizontalOptions="Center" />
+
+            <Label Text="AdoBuddy" Style="{StaticResource Headline}" HorizontalOptions="Center"
+                   SemanticProperties.HeadingLevel="Level1" />
+
+            <Label Text="Sign in with your Azure DevOps credentials"
+                   Style="{StaticResource SubHeadline}" HorizontalOptions="Center" />
+
+            <Label Text="Organization URL" FontAttributes="Bold" />
+            <Entry Text="{Binding OrganizationUrl}"
+                   Placeholder="https://dev.azure.com/myorg"
+                   Keyboard="Url" ReturnType="Next" />
+
+            <Label Text="Personal Access Token" FontAttributes="Bold" />
+            <Entry Text="{Binding Pat}"
+                   Placeholder="Enter your PAT"
+                   IsPassword="True" ReturnType="Go"
+                   ReturnCommand="{Binding LoginCommand}" />
+
+            <Label Text="{Binding ErrorMessage}" TextColor="Red" IsVisible="True" HorizontalOptions="Center">
+                <Label.Triggers>
+                    <DataTrigger TargetType="Label" Binding="{Binding ErrorMessage}" Value="">
+                        <Setter Property="IsVisible" Value="False" />
+                    </DataTrigger>
+                </Label.Triggers>
+            </Label>
+
+            <Button Text="Sign In" Command="{Binding LoginCommand}" HorizontalOptions="Fill">
+                <Button.Triggers>
+                    <DataTrigger TargetType="Button" Binding="{Binding IsBusy}" Value="True">
+                        <Setter Property="IsEnabled" Value="False" />
+                    </DataTrigger>
+                </Button.Triggers>
+            </Button>
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" HorizontalOptions="Center" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
